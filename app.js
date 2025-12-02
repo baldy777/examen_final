@@ -32,17 +32,35 @@ app.get("/datos", (req, res) => {
 app.post("/datos", (req, res) => {
   const { nombre, correo, edad } = req.body;
 
+  if (!nombre || !correo || !edad) {
+    return res.status(400).send("Faltan datos.");
+  }
+
   const fecharegistro = new Date();
   const horaRegistro = Date.now();
 
   const mensaje = "datos recibidos correctamente";
   const datosRecibidos = {
+    id: datos.length + 1,
     nombre,
     correo,
     edad,
   };
+  const jsonmensaje = {
+    mensaje,
+    datosRecibidos,
+    fecharegistro,
+    horaRegistro,
+  };
   datos.push(datosRecibidos);
-  res.send(mensaje, datosRecibidos, fecharegistro, horaRegistro);
+  res.send(jsonmensaje);
+});
+
+app.put("/datos/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const { nombre, correo, edad } = req.body;
+  const index = datos.findIndex((d) => d.id === id);
+  res.send("Dato actualizado correctamente");
 });
 
 app.listen(port, () => {
